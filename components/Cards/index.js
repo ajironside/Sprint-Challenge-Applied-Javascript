@@ -18,8 +18,6 @@
 //
 // Create a card for each of the articles and add the card to the DOM.
 
-
-//article components
 const articleEntry = document.querySelector('.cards-container')
 
 axios
@@ -27,14 +25,26 @@ axios
     .then(response => {
         //console log data to review structure
         //console.log('res', response)
-        console.log('res.data.articles', response.data.articles)
+        //console.log('res.data.articles', response.data.articles)
 
-        //response.data.articles.
+        const articleInfo = Object.values(response.data.articles)
+            //console.log(articleInfo)
+
+        articleInfo.map(content => {
+            content.map(content2 => {
+                articleEntry.appendChild(cardCreator(content2))
+            })
+        })
     })
-    .catch()
+    .catch(error => {
+        console.log('Error', error)
+        const whoops = document.createElement('p')
+        whoops.textContent = "An error occured while fetching this content"
+        articleEntry.appendChild(whoops)
+    })
 
 //card component
-function cardCreator(headline, authorPhoto, authorName) {
+function cardCreator(articleObj) {
     //define elements
     const newCard = document.createElement('div')
     const newHeadline = document.createElement('div')
@@ -57,12 +67,10 @@ function cardCreator(headline, authorPhoto, authorName) {
     imgContainer.classList.add('.img-container')
 
     //add content
-    newHeadline.textContent = headline
-    newAuthorPhoto.src = authorPhoto
-    newAuthorName.textContent = authorName
+    newHeadline.textContent = articleObj.headline
+    newAuthorPhoto.src = articleObj.authorPhoto
+    newAuthorName.textContent = articleObj.authorName
 
     //return
     return newCard
 }
-
-//create card for each article and add to DOM
